@@ -1,0 +1,30 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "rootDir": ".",
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "es2015",
+    "module": "esnext",
+    "lib": ["es2020", "dom"],
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "paths": {
+      "@cabinet/shared": ["./libs/shared/src/index.ts"],
+      "@cabinet/ui": ["./libs/ui/src/index.ts"],
+      "@cabinet/payments": ["./libs/features/payments/src/index.ts"],
+      "@cabinet/partners": ["./libs/features/partners/src/index.ts"],
+      "@cabinet/rmq-monitor": ["./libs/features/rmq-monitor/src/index.ts"],
+      "@cabinet/operation-audit": [
+        "./libs/features/operation-audit/src/index.ts"
+      ],
+      "@cabinet/api": ["./libs/api/src/index.ts"],
+      "@cabinet/auth": ["./libs/features/auth/src/index.ts"]
+    }
+  },
+  "exclude": ["node_modules", "tmp"]
+}

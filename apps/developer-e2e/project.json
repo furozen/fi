@@ -1,0 +1,9 @@
+{
+  "name": "developer-e2e",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "apps/developer-e2e/src",
+  "implicitDependencies": ["developer"],
+  "// targets": "to see all targets run: nx show project developer-e2e --web",
+  "targets": {}
+}

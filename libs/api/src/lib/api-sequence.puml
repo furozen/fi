@@ -1,0 +1,91 @@
+@startuml
+autonumber
+skinparam BoxPadding 10
+skinparam ParticipantPadding 15
+
+title Диаграмма взаимодействия объектов (Sequence Diagram) в @cabinet/api
+
+box "Бизнес-фичи" #LightBlue
+    participant "PaymentsComponent" as Comp
+end box
+
+box "Ядро API" #LightGreen
+    participant "CabinetApiFacade" as Facade
+    database "API_IMPLEMENTATION" as TokenApp
+    database "PARTNER_API_IMPLEMENTATION" as TokenPartner
+    participant "DevApiService" as DevApi
+    participant "BasePartnerApiService" as BaseApi
+end box
+
+box "Бэкенд" #LightGray
+    participant "API Gateway" as Gate
+end box
+
+== Сценарий 1: Вызов метода получения базовых платежей ==
+
+Comp -> Facade : getPayments(partnerId)
+activate Facade
+
+    Facade -> TokenApp : getPayments(partnerId)
+    activate TokenApp
+
+        alt Конфигурация для ЛК Operator (Подставлен BasePartnerApiService)
+            TokenApp -> BaseApi : getPayments(partnerId)
+            activate BaseApi
+                BaseApi -> Gate : Запрос данных платежей
+                Gate --> BaseApi : Данные платежей
+                BaseApi --> TokenApp : Observable<IPayment[]>
+            deactivate BaseApi
+
+        else Конфигурация для ЛК Developer (Подставлен DevApiService)
+            TokenApp -> DevApi : getPayments(partnerId)
+            activate DevApi
+                DevApi -> TokenPartner : getPayments(partnerId)
+                activate TokenPartner
+                    TokenPartner -> BaseApi : getPayments(partnerId)
+                    activate BaseApi
+                        BaseApi -> Gate : Запрос данных платежей
+                        Gate --> BaseApi : Данные платежей
+                        BaseApi --> TokenPartner : Observable<IPayment[]>
+                    deactivate BaseApi
+                    TokenPartner --> DevApi : Observable<IPayment[]>
+                deactivate TokenPartner
+                DevApi --> TokenApp : Observable<IPayment[]>
+            deactivate DevApi
+        end
+
+    TokenApp --> Facade : Observable<IPayment[]>
+    deactivate TokenApp
+
+Facade --> Comp : Observable<IPayment[]>
+deactivate Facade
+
+
+== Сценарий 2: Вызов инженерного метода аудита (Только для Developer) ==
+
+Comp -> Facade : getAdvancedAuditLogs(transactionId)
+activate Facade
+
+    alt Конфигурация для ЛК Operator
+        Facade --> Comp : Исключение (Метод недоступен)
+
+    else Конфигурация для ЛК Developer
+        Facade -> TokenApp : getAdvancedAuditLogs(transactionId)
+        activate TokenApp
+
+            TokenApp -> DevApi : getAdvancedAuditLogs(transactionId)
+            activate DevApi
+                DevApi -> Gate : Запрос расширенных логов
+                Gate --> DevApi : Логи аудита операции
+                DevApi --> TokenApp : Observable<any>
+            deactivate DevApi
+
+        TokenApp --> Facade : Observable<any>
+        deactivate TokenApp
+
+        Facade --> Comp : Observable<any>
+    end
+
+deactivate Facade
+
+@endum

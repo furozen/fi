@@ -1,0 +1,9 @@
+{
+  "name": "operator-e2e",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "apps/operator-e2e/src",
+  "implicitDependencies": ["operator"],
+  "// targets": "to see all targets run: nx show project operator-e2e --web",
+  "targets": {}
+}
