@@ -1,96 +1,76 @@
-# Cabinet
+# Финтех-платформа операционного мониторинга «Cabinet»
 
-<a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
+## 1. Цель проекта
+**Cabinet** — это специализированная платформа, предназначенная для **операционного мониторинга, глубокого технического аудита и устранения сбоев (затыков)** в транзакциях партнеров.
 
-✨ Your new, shiny [Nx workspace](https://nx.dev) is ready ✨.
+> ⚠️ **Критическое ограничение домена**: В системе **нет и не будет** функционала создания финансовых транзакций, чарджбэков или иных изменяющих баланс операций. Платформа работает исключительно в режиме чтения данных мониторинга, разбора инцидентов и изменения конфигураций/статусов систем саппортом, операторами и инженерами.
 
-[Learn more about this workspace setup and its capabilities](https://nx.dev/getting-started/intro#learn-nx?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects) or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
+---
 
-## Run tasks
+## 2. Формирование White Label Appearance (Highly Customized Concept)
+Проект спроектирован как декларативный конструктор личных кабинетов. Кодовая база едина, но на этапе компиляции (**Compile-time**) приложение полностью меняет свое поведение, структуру и внешний вид для конкретного Партнера на основе файлов конфигурации:
 
-To run tasks with Nx use:
+* **Структурная кастомизация (Layout & Navigation)**: Лейауты (`MinimalLayout`, `SidebarLayout`) изолированы в библиотеке `@cabinet/ui`. Они не содержат жестких ссылок на модули и строят интерфейс динамически на основе массива меню, переданного через Dependency Injection (`PARTNER_NAV_ITEMS`). Неиспользуемые фичи полностью вырезаются из бандла на этапе сборки (**Tree Shaking**).
+* **Локализация текстов (Languages & Overrides)**: Каждый проект имеет свой массив разрешенных языков. Система поддерживает глубокое слияние (Deep Merge) JSON-переводов: поверх базовых текстов ядра накатывается JSON-файл партнера, позволяя переопределять любые формулировки под бренд.
+* **Визуальный стиль (Material 3 Design Tokens)**: Компоненты полностью лишены инлайнового хардкода цветов. Кастомизация внешнего вида (цвета, шрифты, скругления) реализуется через дизайн-токены **Angular Material 3** (системные CSS-переменные `--mat-sys-*`) и глобальные CSS-свойства (например, `--branding-border-radius`), подключаемые в конфигурации сборки конкретного клиента.
+* **Сетевая стратегия (API Strategy)**: Точки входа работают через проксирующий `api-gateway` (задается в конфиге). Конкретные реализации подменяются через Angular DI токен `API_IMPLEMENTATION` на этапе сборки.
 
-```sh
-npx nx <target> <project-name>
+---
+
+## 3. Технологический стек
+* **Фреймворк:** Angular 22 (Стабильный релиз).
+* **Рантайм-стандарты:** Полноценный **Zoneless** (работа без `zone.js`), **Angular Signals**, **Signal Forms** (`@angular/forms`), новый управляющий синтаксис (`@if`, `@for`).
+* **Монорепозиторий:** Nx (Project Crystal / Inferred Targets) с единым корневым `node_modules`.
+* **Сборщик:** Application Builder на базе **Esbuild** / Vite.
+* **UI-фреймворк:** Angular Material 3 + SCSS.
+* **Тестирование:** **Vitest** (через `@analogjs/vite-plugin-angular` для сверхбыстрого тестирования библиотек-компонентов на лету без предварительной сборки).
+
+---
+
+## 4. Структура проекта Cabinet
+
+```text
+├── apps/                          # ТОЧКИ СБОРКИ (Приложения)
+│   ├── operator/                  # Основной кастомизируемый ЛК для партнеров и операторов
+│   └── developer/                 # Технический ЛК для разработчиков (детальный аудит и контроль)
+│
+├── libs/                          # ИЗОЛИРОВАННЫЕ БИБЛИОТЕКИ
+│   ├── api/                       # Ядро сетевого взаимодействия (Фасады, контракты, моки)
+│   │   ├── src/lib/concrete/      # Реализации (BasePartnerApiService, DevApiService, MockApiService)
+│   │   ├── src/lib/interfaces/    # Контракты (ICabinetApi, IDevCabinetApi)
+│   │   └── src/lib/mocks/         # Изолированные типизированные моковые данные транзакций и партнеров
+│   ├── shared/                    # Чистые утилиты, хелперы, типы конфигураций (без циклических связей)
+│   ├── ui/                        # Дизайн-система (Шаблоны MinimalLayout, SidebarLayout на токенах M3)
+│   └── features/                  # Функциональные модули бизнес-логики (Изолированные либы)
+│       ├── auth/                  # Модуль авторизации на Signal Forms (Компонент Login)
+│       ├── errors/                # Экраны системных ошибок и сбоев
+│       ├── payments/              # Интерфейсы отслеживания затыков в платежах
+│       └── partners/              # Управление лимитами и комиссиями партнеров
 ```
 
-For example:
+---
 
-```sh
-npx nx build myproject
+## 5. Структура конфигурации (WhiteLabelConfig)
+
+Каждый White Label бандл описывается интерфейсом конфигурации в `@cabinet/shared`. Файлы окружения (`environment.ts`) подменяются через `fileReplacements` в `angular.json` / `project.json` в момент компиляции:
+
+```typescript
+export interface WhiteLabelConfig {
+  partnerId: string;            // Уникальный ID партнера для X-Partner-ID заголовка
+  apiBaseUrl: string;           // Адрес целевого проксирующего api-gateway
+  layoutType: 'sidebar' | 'minimal'; // Используемая базовая разметка
+  themeFile: string;            // Путь к SCSS файлу с дизайн-токенами бренда
+  supportedLanguages: string[]; // Ограниченный массив доступных локалей
+  enabledFeatures: {            // Флаги Tree Shaking для условного роутинга
+    payments: boolean;
+    partnersManagement: boolean;
+    advancedAudit: boolean;     // Доступно строго в ЛК Developer
+  };
+}
 ```
 
-These targets are either [inferred automatically](https://nx.dev/concepts/inferred-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or defined in the `project.json` or `package.json` files.
-
-[More about running tasks in the docs &raquo;](https://nx.dev/features/run-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Add new projects
-
-While you could add new projects to your workspace manually, you might want to leverage [Nx plugins](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) and their [code generation](https://nx.dev/features/generate-code?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) feature.
-
-To install a new plugin you can use the `nx add` command. Here's an example of adding the React plugin:
-```sh
-npx nx add @nx/react
-```
-
-Use the plugin's generator to create new projects. For example, to create a new React app or library:
-
-```sh
-# Generate an app
-npx nx g @nx/react:app demo
-
-# Generate a library
-npx nx g @nx/react:lib some-lib
-```
-
-You can use `npx nx list` to get a list of installed plugins. Then, run `npx nx list <plugin-name>` to learn about more specific capabilities of a particular plugin. Alternatively, [install Nx Console](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) to browse plugins and generators in your IDE.
-
-[Learn more about Nx plugins &raquo;](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) | [Browse the plugin registry &raquo;](https://nx.dev/plugin-registry?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Set up CI!
-
-### Step 1
-
-To connect to Nx Cloud, run the following command:
-
-```sh
-npx nx connect
-```
-
-Connecting to Nx Cloud ensures a [fast and scalable CI](https://nx.dev/ci/intro/why-nx-cloud?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) pipeline. It includes features such as:
-
-- [Remote caching](https://nx.dev/ci/features/remote-cache?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task distribution across multiple machines](https://nx.dev/ci/features/distribute-task-execution?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Automated e2e test splitting](https://nx.dev/ci/features/split-e2e-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task flakiness detection and rerunning](https://nx.dev/ci/features/flaky-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-### Step 2
-
-Use the following command to configure a CI workflow for your workspace:
-
-```sh
-npx nx g ci-workflow
-```
-
-[Learn more about Nx on CI](https://nx.dev/ci/intro/ci-with-nx#ready-get-started-with-your-provider?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Install Nx Console
-
-Nx Console is an editor extension that enriches your developer experience. It lets you run tasks, generate code, and improves code autocompletion in your IDE. It is available for VSCode and IntelliJ.
-
-[Install Nx Console &raquo;](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Useful links
-
-Learn more:
-
-- [Learn more about this workspace setup](https://nx.dev/getting-started/intro#learn-nx?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects)
-- [Learn about Nx on CI](https://nx.dev/ci/intro/ci-with-nx?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Releasing Packages with Nx release](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [What are Nx plugins?](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-And join the Nx community:
-- [Discord](https://go.nx.dev/community)
-- [Follow us on X](https://twitter.com/nxdevtools) or [LinkedIn](https://www.linkedin.com/company/nrwl)
-- [Our Youtube channel](https://www.youtube.com/@nxdevtools)
-- [Our blog](https://nx.dev/blog?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+## 6. Базовые команды для разработки
+* **Запуск ЛК Оператора локально:** `npx nx serve operator`
+* **Запуск ЛК Разработчика локально:** `npx nx serve developer`
+* **Тестирование фичи (Vitest):** `npx nx test auth`
+* **Сквозной прогон всех тестов репозитория:** `npx nx run-many -t test`
