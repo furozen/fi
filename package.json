@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "dev:ws": "npx nx serve operator --configuration=development,whitestar"
+    "dev:operator:default": "npx nx serve operator --configuration=development",
+    "dev::operator:whitestar": "npx nx serve operator --configuration=development,whitestar"
   },
   "private": true,
   "devDependencies": {
