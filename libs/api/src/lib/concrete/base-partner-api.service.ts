@@ -6,6 +6,7 @@ import {Observable} from "rxjs";
 
 @Injectable()
 export class BasePartnerApiService implements ICabinetApi {
+  name: string = 'BasePartnerApiService';
   protected http = inject(HttpClient);
 
   protected paymentsUrl = `/api/v1/payments`;

@@ -10,6 +10,7 @@ import {PARTNER_API_IMPLEMENTATION} from "../cabinet-api.facade";
 
 @Injectable()
 export class DevApiService implements IDevCabinetApi,IApiLogs {
+  name: string = 'DevApiService';
   private readonly http = inject(HttpClient);
 
   // inject current White Label API-service

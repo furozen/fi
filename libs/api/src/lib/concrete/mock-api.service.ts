@@ -12,6 +12,8 @@ export class MockApiService implements ICabinetApi {
 
   private readonly SIMULATED_DELAY = 400;
 
+  name= 'MockApi';
+
   getPayments(partnerId: string): Observable<IPayment[]> {
     const filtered = MOCK_PAYMENTS.filter(p => p.partnerId === partnerId);
     return of(filtered).pipe(delay(this.SIMULATED_DELAY));

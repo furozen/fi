@@ -1,5 +1,5 @@
 // libs/features/auth/src/lib/components/login/login.ts
-import { Component, signal } from '@angular/core';
+import {Component, inject, signal} from '@angular/core';
 import { CommonModule } from '@angular/common';
 // Импортируем стабильный API сигнальных форм Angular 22
 import {email, form, FormField, required} from '@angular/forms/signals';
@@ -9,6 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import {FormsModule} from "@angular/forms";
+import {CabinetApiFacade} from "@cabinet/api";
 
 @Component({
   selector: 'login',
@@ -29,6 +30,8 @@ import {FormsModule} from "@angular/forms";
 })
 export class Login {
 
+  private api= inject(CabinetApiFacade);
+
   private readonly credentialsState = signal({
     email: '',
     password: ''
@@ -43,7 +46,7 @@ export class Login {
     }
   );
 
-  // Управление видимостью символов пароля (локальный UI сигнал)
+
   protected readonly hidePassword = signal<boolean>(true);
 
   protected onSubmit(event: Event): void {
@@ -55,5 +58,8 @@ export class Login {
     // Считываем значения полей (они автоматически синхронизированы в сигнале)
     const { email, password } = this.credentialsState();
     console.log('Авторизация через Signal Forms:', { email: email, password });
+    console.log('api', this.api.name);
   }
+
+
 }

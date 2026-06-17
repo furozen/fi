@@ -64,6 +64,14 @@
             "apps/operator/src/styles.scss",
             "brands/whitestar/theme.scss"
           ]
+        },
+        "mock-api": {
+          "fileReplacements": [
+            {
+              "replace": "api-strategies/api-strategy.config.ts",
+              "with": "api-strategies/api-strategy.mock.config.ts"
+            }
+          ]
         }
       },
       "defaultConfiguration": "development"
@@ -80,7 +88,7 @@
           "buildTarget": "operator:build:development"
         },
         "whitestar": {
-          "buildTarget": "operator:build:development,whitestar"
+          "buildTarget": "operator:build:development,whitestar,mock-api"
         }
       },
       "defaultConfiguration": "development"
