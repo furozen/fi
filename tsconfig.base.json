@@ -23,7 +23,8 @@
         "./libs/features/operation-audit/src/index.ts"
       ],
       "@cabinet/api": ["./libs/api/src/index.ts"],
-      "@cabinet/auth": ["./libs/features/auth/src/index.ts"]
+      "@cabinet/auth": ["./libs/features/auth/src/index.ts"],
+      "@cabinet/brands": ["./brands"]
     }
   },
   "exclude": ["node_modules", "tmp"]

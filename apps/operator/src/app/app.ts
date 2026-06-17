@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { NxWelcome } from './nx-welcome';
+
+import {brandingConfig} from "@cabinet/brands";
 
 @Component({
   imports: [RouterModule],
@@ -9,5 +10,5 @@ import { NxWelcome } from './nx-welcome';
   styleUrl: './app.scss',
 })
 export class App {
-  protected title = 'operator';
+  protected title = brandingConfig.name;
 }

@@ -55,11 +55,14 @@
 
         "whitestar": {
           "fileReplacements": [
-
+            {
+              "replace": "brands/brand-config.ts",
+              "with": "brands/whitestar/brand-config.ts"
+            }
           ],
           "styles": [
             "apps/operator/src/styles.scss",
-            "brands//whitestar/theme.scss"
+            "brands/whitestar/theme.scss"
           ]
         }
       },
