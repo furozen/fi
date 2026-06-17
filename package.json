@@ -2,7 +2,9 @@
   "name": "@cabinet/source",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "dev:ws": "npx nx serve operator --configuration=development,whitestar"
+  },
   "private": true,
   "devDependencies": {
     "@analogjs/vite-plugin-angular": "^2.6.1",

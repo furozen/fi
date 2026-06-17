@@ -3,11 +3,12 @@
 
 html {
   height: 100%;
+  background-color: red;
   @include mat.theme(
       (
         color: (
           primary: mat.$azure-palette,
-          tertiary: mat.$blue-palette,
+          tertiary: mat.$orange-palette,
         ),
         typography: Roboto,
         density: 0,
