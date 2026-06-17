@@ -4,6 +4,7 @@ import {
 } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { appRoutes } from './app.routes';
+import { apiProviders } from './api-strategy.config';
 import {
   provideClientHydration,
   withEventReplay,
@@ -17,5 +18,6 @@ export const appConfig: ApplicationConfig = {
     provideAnimationsAsync(),
 
     provideRouter(appRoutes),
+    ...apiProviders
   ],
 };

@@ -11,23 +11,22 @@ Accepted
 
 ## Decision
 
-Использовать build-time branding через Nx file replacements.
+Используес конфигурации через запятую.
+```Configurations can be applied to any Angular CLI builder. Multiple configurations can be specified with a comma separator. The configurations are applied in order, with conflicting options using the value from the last configuration.```
 
-Подменяются:
+как например: 
 
-- brands/branding-config.ts
-- brands/providers.ts
-- brands/theme.scss
+```nx serve operator \
+  --configuration=development,whitestar,mock-api```
 
 ## Consequences
 
 Плюсы:
 
-- Нет runtime-переключения бренда
-- Простая сборка
-- Безопасное разделение окружений
+- нет комбинаторики
+- сколько угодно осей
+- оси независимы от друг друга
 
 Минусы:
 
-- Несколько file replacements
-- Новый бренд требует конфигурации сборки
+- пока не видно
