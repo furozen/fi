@@ -46,17 +46,35 @@
         "development": {
           "optimization": false,
           "extractLicenses": false,
-          "sourceMap": true
+          "sourceMap": true,
+          "stylePreprocessorOptions": {
+            "includePaths": [
+              "brands"
+            ]
+          }
+        },
+
+        "whitestar": {
+          "fileReplacements": [
+            {
+              "replace": "brands/brands-config.ts",
+              "with": "brands/whitestar/branding-config.ts"
+            },
+            {
+              "replace": "brands/providers.ts",
+              "with": "brands/whitestar/providers.ts"
+            }
+          ],
+          "stylePreprocessorOptions": {
+            "includePaths": [
+              "brands/whitestar"
+            ]
+          }
         }
       },
-      "whitestar": {
-        "fileReplacements": {
-          "replace": "brands/theme.scss",
-          "with": "brands/whitestar/theme.scss"
-        }
-      },
-      "defaultConfiguration": "production"
+      "defaultConfiguration": "development"
     },
+
     "serve": {
       "continuous": true,
       "executor": "@angular/build:dev-server",
@@ -68,10 +86,7 @@
           "buildTarget": "operator:build:development"
         },
         "whitestar": {
-          "fileReplacements": {
-            "replace": "brands/theme.scss",
-            "with": "brands/whitestar/theme.scss"
-          }
+          "buildTarget": "operator:build:whitestar"
         }
       },
       "defaultConfiguration": "development"
