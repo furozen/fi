@@ -1,0 +1,17 @@
+:host{
+  width: 100%;
+}
+.login-wrapper{
+  display: flex;
+  justify-content: center;
+
+
+  .login-card{
+    min-width: 300px;
+  }
+  .form-content{
+    display: flex;
+    flex-direction: column;
+    justify-content: stretch;
+  }
+}

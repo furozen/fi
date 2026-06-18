@@ -9,7 +9,9 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import {FormsModule} from "@angular/forms";
+import {Router} from '@angular/router';
 import {CabinetApiFacade} from "@cabinet/api";
+import {AuthService} from '../../services/auth.service';
 
 @Component({
   selector: 'login',
@@ -31,6 +33,8 @@ import {CabinetApiFacade} from "@cabinet/api";
 export class Login {
 
   private api= inject(CabinetApiFacade);
+  private readonly auth = inject(AuthService);
+  private readonly router = inject(Router);
 
   private readonly credentialsState = signal({
     email: '',
@@ -57,8 +61,15 @@ export class Login {
 
     // Считываем значения полей (они автоматически синхронизированы в сигнале)
     const { email, password } = this.credentialsState();
+
+    // Заглушка: реального бэкенда пока нет, помечаем пользователя авторизованным
+    // и возвращаемся на защищённый маршрут. Когда появится API — заменим на вызов
+    // authService.login(token) по результату запроса.
     console.log('Авторизация через Signal Forms:', { email: email, password });
     console.log('api', this.api.name);
+
+    this.auth.login();
+    void this.router.navigate(['/']);
   }
 
 

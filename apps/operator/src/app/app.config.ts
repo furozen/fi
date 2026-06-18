@@ -16,7 +16,7 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideClientHydration(withEventReplay()),
     provideBrowserGlobalErrorListeners(),
-    provideAnimationsAsync(),
+    provideAnimationsAsync(), //TODO remove it
 
     provideRouter(appRoutes),
     ...apiProviders
