@@ -10,5 +10,5 @@ import {brandingConfig} from "@cabinet/brands";
   styleUrl: './app.scss',
 })
 export class App {
-  protected title = brandingConfig.name;
+  protected title = brandingConfig.name + brandingConfig.enabledFeatures.payments;
 }

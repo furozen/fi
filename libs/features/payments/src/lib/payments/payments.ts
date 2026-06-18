@@ -1,8 +1,11 @@
 import { Component } from '@angular/core';
+import {PaymentTableComponent} from "../simple-table/payment-table.component";
 
 @Component({
   selector: 'lib-payments',
-  imports: [],
+  imports: [
+    PaymentTableComponent
+  ],
   templateUrl: './payments.html',
   styleUrl: './payments.scss',
 })

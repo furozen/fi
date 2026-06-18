@@ -58,6 +58,10 @@
             {
               "replace": "brands/brand-config.ts",
               "with": "brands/whitestar/brand-config.ts"
+            },
+            {
+              "replace": "api-strategies/api-strategy.config.ts",
+              "with": "api-strategies/api-strategy.mock.config.ts"
             }
           ],
           "styles": [
@@ -88,7 +92,7 @@
           "buildTarget": "operator:build:development"
         },
         "whitestar": {
-          "buildTarget": "operator:build:development,whitestar,mock-api"
+          "buildTarget": "operator:build:development,whitestar"
         }
       },
       "defaultConfiguration": "development"

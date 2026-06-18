@@ -6,6 +6,7 @@
     <button mat-button routerLink="/">Дашборд</button>
     <button mat-button routerLink="/analytics">Аналитика</button>
     <span class="spacer"></span>
+    <router-outlet name="lang-switcher"></router-outlet>
     <button mat-icon-button *ngIf="isMobile" (click)="rightSidenav.toggle()"><mat-icon>tune</mat-icon></button>
   </mat-toolbar>
 
