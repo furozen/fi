@@ -1,0 +1,9 @@
+
+  <mat-select [value]="lang.currentLanguage()" class="language-switcher"
+              (valueChange)="lang.setLanguage($event)">
+
+    @for (code of lang.supportedLanguages; track code) {
+      <mat-option [value]="code">{{ code | uppercase }}</mat-option>
+    }
+  </mat-select>
+

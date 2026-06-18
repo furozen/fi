@@ -1,5 +1,7 @@
 import {Routes} from '@angular/router';
 import {isAuthGuard} from '@cabinet/auth';
+import {brandingConfig} from "@cabinet/brands";
+import {SimpleWithIconsComponent} from "@cabinet/payments";
 
 export const appRoutes: Routes = [
   {
@@ -9,9 +11,15 @@ export const appRoutes: Routes = [
     canActivate: [isAuthGuard],
     loadComponent: () => import('@cabinet/ui').then(m => m.Dashboard3ColumnLayout),
     children: [
-      {
+      ...(brandingConfig.enabledFeatures.payments ? [{
         path: '',
         loadComponent: () => import('@cabinet/payments').then(m => m.Payments)
+      }] : []),
+      {
+        path: '',
+        loadComponent: () => import('@cabinet/payments').then(m => m.Stats),
+        outlet: 'left-sidebar',
+        data: { animation: 'LeftDash' }
       },
       {
         path: '',
@@ -21,7 +29,7 @@ export const appRoutes: Routes = [
       },
       {
         path: '',
-        loadComponent: () =>  import('@cabinet/payments').then(m => m.Notices),
+        loadComponent: () =>  import('@cabinet/payments').then(m => m.SimpleWithIconsComponent),
         outlet: 'right-sidebar',
         data: { animation: 'RightDash' }
       }
@@ -35,15 +43,22 @@ export const appRoutes: Routes = [
     canActivate: [isAuthGuard],
     loadComponent: () => import('@cabinet/ui').then(m => m.Dashboard3ColumnLayout),
     children: [
-      {
-        path: '',
-        loadComponent: () => import('@cabinet/payments').then(m => m.Payments)
-      },
+        ...(brandingConfig.enabledFeatures.payments ? [{
+          path: '',
+          loadComponent: () => import('@cabinet/payments').then(m => m.Payments)
+        }] : []),
+
       {
         path: '',
         loadComponent: () => import('@cabinet/payments').then(m => m.Stats),
         outlet: 'left-sidebar',
         data: { animation: 'LeftDash' }
+      },
+      {
+        path: '',
+        loadComponent: () => import('@cabinet/ui').then(m => m.LanguageSwitcherComponent),
+        outlet: 'lang-switcher',
+
       },
       {
         path: '',

@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
+    "reset:cache": "npx nx reset",
     "dev:operator:default": "npx nx serve operator --configuration=development",
     "dev::operator:whitestar": "npx nx serve operator --configuration=development,whitestar"
   },

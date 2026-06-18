@@ -1,1 +1,1 @@
-export * from './lib/shared/shared';
+export { LanguageService } from './lib/services/language.service';
