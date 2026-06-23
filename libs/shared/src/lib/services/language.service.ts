@@ -17,7 +17,7 @@ const DEFAULT_LANGUAGE = 'en';
 export class LanguageService {
   private readonly platformId = inject(PLATFORM_ID);
 
-  /** Массив языков, разрешённых для текущего бренда. */
+
   readonly supportedLanguages = brandingConfig.supportedLanguages;
 
   /** Текущий выбранный язык (read-only сигнал). */
